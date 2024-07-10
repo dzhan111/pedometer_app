@@ -52,15 +52,13 @@ class _MobileLayoutState extends State<MobileLayout> {
         backgroundColor: Color.fromARGB(255, 0, 0, 0),
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home, color : _page == 0 ? primaryColor : secondaryColor), label: '', backgroundColor: secondaryColor),
+              icon: Icon(Icons.directions_walk, color : _page == 0 ? primaryColor : secondaryColor), label: '', backgroundColor: secondaryColor),
               BottomNavigationBarItem(
-              icon: Icon(Icons.search, color : _page == 1 ? primaryColor : secondaryColor), label: '', backgroundColor: secondaryColor),
+              icon: Icon(Icons.leaderboard, color : _page == 1 ? primaryColor : secondaryColor), label: '', backgroundColor: secondaryColor),
               BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle, color : _page == 2 ? primaryColor : secondaryColor), label: '', backgroundColor: secondaryColor),
-              BottomNavigationBarItem(
-              icon: Icon(Icons.favorite, color : _page == 3 ? primaryColor : secondaryColor), label: '', backgroundColor: secondaryColor),
-              BottomNavigationBarItem(
-              icon: Icon(Icons.person,color : _page == 4 ? primaryColor : secondaryColor), label: '', backgroundColor: secondaryColor),
+              icon: Icon(Icons.person, color : _page == 2 ? primaryColor : secondaryColor), label: '', backgroundColor: secondaryColor),
+              
+              
         ],onTap: navigationTab,
       ),
     );

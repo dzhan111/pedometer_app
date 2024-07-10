@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pedometer/pedometer.dart';
+import 'package:social_pedometer/mobile_layout.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -79,53 +82,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Pedometer Example'),
-          backgroundColor: Colors.transparent,
-          elevation: 100,
-        ),
-        backgroundColor: Colors.black,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'Steps Taken',
-                style: TextStyle(fontSize: 30, color: Colors.white),
-              ),
-              Text(
-                _steps,
-                style: const TextStyle(fontSize: 60, color: Colors.green),
-              ),
-              const Divider(height: 100, thickness: 0, color: Colors.white),
-              const Text(
-                'Pedestrian Status',
-                style: TextStyle(fontSize: 30, color: Colors.white),
-              ),
-              Icon(
-                _status == 'walking'
-                    ? Icons.directions_walk
-                    : _status == 'stopped'
-                        ? Icons.accessibility_new
-                        : Icons.error,
-                size: 100,
-                color: Colors.white,
-              ),
-              Text(
-                _status,
-                style: TextStyle(
-                  fontSize: 30,
-                  color: _status == 'walking' || _status == 'stopped'
-                      ? Colors.lightGreenAccent
-                      : Colors.redAccent,
-                ),
-              ),
-            ],
-          ),
-        ),
-        
-      ),
+      home: MobileLayout()
     );
   }
 }
