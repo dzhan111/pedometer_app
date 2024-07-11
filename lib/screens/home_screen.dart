@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onStepCount(StepCount event) {
-    DateTime currentDate = DateTime.now();
+    DateTime currentDate = DateTime.now().add(Duration(days: 1));
     //DateTime tomorrow = currentDate.add(Duration(days: 1));
     print(currentDate);
     if (currentDate.day != _lastUpdate.day ||
