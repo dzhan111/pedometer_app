@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:social_pedometer/auth_methods.dart';
+import 'package:social_pedometer/firebase_methods/auth_methods.dart';
 import 'package:social_pedometer/mobile_layout.dart';
 import 'package:social_pedometer/screens/sign_up_screen.dart';
 import 'package:social_pedometer/widgets/text_field_input.dart';

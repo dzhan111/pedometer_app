@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:social_pedometer/global_vars.dart';
+import 'package:social_pedometer/utility/global_vars.dart';
 
 class MobileLayout extends StatefulWidget {
   const MobileLayout({super.key});
