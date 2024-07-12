@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:social_pedometer/firebase_methods/steps_service.dart';
-
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Stream<StepCount> _stepCountStream;
   late Stream<PedestrianStatus> _pedestrianStatusStream;
-  String _status = '?';
+  String _status = 'stopped';
   var _steps = 0;
   var start = 0;
   DateTime _lastUpdate = DateTime.now();
@@ -27,6 +27,34 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     initPlatformState();
+    fetchTodaySteps();
+  }
+
+  Future<void> fetchTodaySteps() async {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      var date =
+          DateTime.now().toString().substring(0, 10); // Format: YYYY-MM-DD
+      var stepDoc = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('steps')
+          .doc(date);
+
+      var doc = await stepDoc.get();
+      if (doc.exists) {
+        setState(() {
+          _steps = doc.data()?['steps'] ?? 0;
+          _lastUpdate = DateTime.now(); // Ensure the last update is today
+        });
+      } else {
+        // No steps recorded yet for today
+        setState(() {
+          _steps = 0;
+          _lastUpdate = DateTime.now(); // Reset last update to now
+        });
+      }
+    }
   }
 
   void initPlatformState() {
@@ -40,48 +68,59 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onStepCount(StepCount event) {
-    DateTime currentDate = DateTime.now().add(Duration(days: 1));
+    DateTime currentDate = DateTime.now();
     //DateTime tomorrow = currentDate.add(Duration(days: 1));
     print(currentDate);
     if (currentDate.day != _lastUpdate.day ||
         currentDate.month != _lastUpdate.month ||
         currentDate.year != _lastUpdate.year) {
-          //calls to save steps to a collection
-          _stepsService.saveDailySteps(_steps);
-      setState(() {
-        start = event.steps;
-        _steps = 0;  // Reset steps at the start of a new day
-        _lastUpdate = currentDate;  // Update last update time to now
-      });
-    } else {
+      //calls to save steps to a collection
+
+      if (mounted) {
+        setState(() {
+          start = event.steps;
+          _steps = 0; // Reset steps at the start of a new day
+          _lastUpdate = currentDate; // Update last update time to now
+        });
+      }
+      print("new day update");
       _stepsService.saveDailySteps(_steps);
-      setState(() {
-        _steps = (event.steps - start);
-        
-        _lastUpdate = currentDate;
-      });
+    } else {
+      if (mounted) {
+        setState(() {
+          _steps = (event.steps - start);
+
+          _lastUpdate = currentDate;
+        });
+      }
+      print("current day update");
+      _stepsService.saveDailySteps(_steps);
     }
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event) {
-    setState(() {
-      _status = event.status;
-    });
+    if (mounted) {
+      setState(() {
+        _status = event.status;
+      });
+    }
   }
 
   void onPedestrianStatusError(error) {
-    setState(() {
-      _status = 'unknown';
-    });
+    if (mounted) {
+      setState(() {
+        _status = 'unknown';
+      });
+    }
   }
 
   void onStepCountError(error) {
-    setState(() {
-      _steps = -1;
-    });
+    if (mounted) {
+      setState(() {
+        _steps = -1;
+      });
+    }
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +168,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        
       ),
     );
   }

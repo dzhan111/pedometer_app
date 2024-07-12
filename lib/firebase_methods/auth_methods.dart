@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:social_pedometer/firebase_methods/steps_service.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -7,16 +8,26 @@ class AuthMethods {
 
   // Save user data to Firestore
   Future<void> saveUserData(User? user, {String? displayName}) async {
-    if (user != null) {
-      await _firestore.collection('users').doc(user.uid).set({
-        'email': user.email ?? '',
-        'displayName': displayName ?? user.displayName ?? 'No Name',
-        'lastLogin': DateTime.now(),
-        'createdAt': FieldValue.serverTimestamp(),
-        'profilePicture': 'default_profile_picture_url'
-      });
-    }
+  if (user != null) {
+    // Create a reference to the user's document
+    DocumentReference userRef = _firestore.collection('users').doc(user.uid);
+
+    // Prepare user data
+    Map<String, dynamic> userData = {
+      'email': user.email ?? '',
+      'displayName': displayName ?? user.displayName ?? 'No Name',
+      'lastLogin': DateTime.now(),
+      'createdAt': FieldValue.serverTimestamp(), // Ensures creation date is only set once
+      'profilePicture': 'default_profile_picture_url'
+    };
+
+    // Set or update user data
+    await userRef.set(userData, SetOptions(merge: true));
+
+    // Get today's date as a string
+    StepsService().saveDailySteps(0);
   }
+}
 
   // Sign up user function with enhanced error handling and data storage
   Future<String> createUser({

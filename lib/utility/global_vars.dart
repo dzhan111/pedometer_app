@@ -5,6 +5,6 @@ import 'package:social_pedometer/screens/profile_screen.dart';
 
 List<Widget> homeScreenItems = [
     const HomeScreen(),
-    const LeaderBoardsScreen(),
-    ProfileScreen()
+    LeaderBoardsScreen(),
+    const ProfileScreen()
 ];
